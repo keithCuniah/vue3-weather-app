@@ -3,7 +3,7 @@
     <nav>
       <router-link :to="{ name: 'Home' }">Home</router-link>
       <router-link :to="{ name: 'WeatherForecast' }">
-        Forecast & Weather
+        Weather & Forecast
       </router-link>
     </nav>
     <router-view />

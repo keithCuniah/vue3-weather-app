@@ -1,7 +1,17 @@
 <template>
-  <h1>Weather Forecast View</h1>
+  <h1>Weather Forecast</h1>
+  <div class="search">
+    <i class="description">Select a country :</i>
+    <!-- <input type="text" v-model="searchString" placeholder="edit me"/>{{ searchString }} -->
+  </div>
   <div class="countries" v-if="countries.length">
-    <span class="country" v-for="countryObj in countries" :key="countryObj.id">
+    <span
+      class="country"
+      v-for="countryObj in countries"
+      :key="countryObj.id"
+      @click="onCountrySelection(countryObj)"
+    >
+
       {{ countryObj.id }} -
       <span>{{ countryObj.country }}</span>
     </span>
@@ -17,6 +27,8 @@ import { GetCountriesObj } from "../types";
 export default {
   name: "WeatherForecastView",
   setup() {
+    let searchString = ref<string>("");
+
     const {
       countries,
       error,
@@ -26,14 +38,24 @@ export default {
       error: Ref<string | null>;
       load: () => Promise<void>;
     } = getCountries();
+
     onMounted(load);
 
-    return { countries };
+    const onCountrySelection = (countryObj: GetCountriesObj) =>
+      console.log(countryObj);
+
+    return { countries, onCountrySelection, searchString };
   },
 };
 </script>
 
 <style scoped>
+h1 {
+  padding: 0.8em;
+}
+.description {
+  padding: 0.5em;
+}
 .countries {
   display: flex;
   flex-wrap: wrap;
