@@ -1,39 +1,31 @@
 <template>
   <h1>Weather Forecast View</h1>
-  <div class="countries">
+  <div class="countries" v-if="countries.length">
     <span class="country" v-for="countryObj in countries" :key="countryObj.id">
-      {{ countryObj.country }}</span
-    >
+      {{ countryObj.id }} -
+      <span>{{ countryObj.country }}</span>
+    </span>
   </div>
+  <div class="loading" v-if="!countries.length">Loading ...</div>
 </template>
 
 <script lang="ts">
-import { onMounted, ref } from "vue";
-// import getCountries from "@/composables/getCountries";
+import { onMounted, Ref, ref } from "vue";
+import getCountries from "../composables/getCountries";
+import { GetCountriesObj } from "../types";
+
 export default {
   name: "WeatherForecastView",
   setup() {
-    const countries = ref<{ id: number; country: string }[]>([]);
-    let error = ref<string | null>(null);
-    const load = async () => {
-      try {
-        const data: Response = await fetch(
-          "http://localhost:4000/api/countries"
-        );
-        if (!data.ok) {
-          throw Error("No data available");
-        }
-        countries.value = await data.json();
-        countries.value = countries.value.sort(
-          (
-            a: { id: number; country: string },
-            b: { id: number; country: string }
-          ) => (a.country > b.country ? 1 : -1)
-        );
-      } catch (err: string) {
-        error.value = err;
-      }
-    };
+    const {
+      countries,
+      error,
+      load,
+    }: {
+      countries: Ref<GetCountriesObj[]>;
+      error: Ref<string | null>;
+      load: () => Promise<void>;
+    } = getCountries();
     onMounted(load);
 
     return { countries };
@@ -55,6 +47,7 @@ export default {
   border-radius: 10px;
   color: #444;
   cursor: pointer;
+  text-transform: capitalize;
 }
 .country:hover {
   background: #444;
