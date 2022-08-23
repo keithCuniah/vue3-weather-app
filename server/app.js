@@ -1,34 +1,33 @@
-const express = require('express');
-const cors = require('cors');
-const fs = require('fs');
-const utils = require('./shared/utils');
+const express = require("express");
+const cors = require("cors");
+const fs = require("fs");
+const utils = require("./shared/utils");
 
 const app = express();
 app.use(cors());
 const port = process.env.PORT || 3000;
 
 // get data from city.list
-const rawDataJson = JSON.parse(fs.readFileSync('city.list.min.json'));
-
+const rawDataJson = JSON.parse(fs.readFileSync("city.list.min.json"));
 //get object{country:cities} and list[country]
 const { rawDataGroupByCountry, listOfCountries } =
   utils.getCitiesGroupByCountry(rawDataJson, utils.getFullCountryName);
 
-const weatherForecastRouter = require('./routes/weatherForecastRouter')(
+const weatherForecastRouter = require("./routes/weatherForecastRouter")(
   listOfCountries,
   rawDataGroupByCountry
 );
-app.use('/api', weatherForecastRouter);
+app.use("/api", weatherForecastRouter);
 
 // Endpoint
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
   res.send(`<div>
               <h1>Welcome to my Weather Forecast server API</h1>
               <p>Go to /api</p>
             </div>`);
 });
 
-app.get('/api', (req, res) => {
+app.get("/api", (req, res) => {
   res.send(
     `<div>
       <h1>Welcome to my Weather Forecast server API</h1>

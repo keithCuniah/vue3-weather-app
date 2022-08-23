@@ -3,7 +3,8 @@ function locationController(listOfCountries, objectGroupByCountry) {
 
   async function getCountries(req, res) {
     try {
-      res.send(listOfCountries.sort((a, b) => a.country.localeCompare(b.country)));
+      const sortedListOfCountries = listOfCountries.sort((a, b) => a.country.localeCompare(b.country))
+      res.send(sortedListOfCountries);
     } catch (err) {
       res.send("Ressources not found, can't find any country");
       console.log(` Call in error : ${err}`);
