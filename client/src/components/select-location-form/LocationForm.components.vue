@@ -38,7 +38,6 @@
       >
       </SelectInput>
     </div>
-    {{ citySelected }}
   </div>
 </template>
 
@@ -59,7 +58,7 @@ export default {
   components: {
     SelectInput,
   },
-  setup() {
+  setup(props: any, { emit }: any) {
     const countrySelected = ref<CountryObjFromAPI | null>(null);
     const citySelected = ref<CityObjFromAPI | null>(null);
     const cities = ref<CityObjFromAPI[]>([]);
@@ -76,13 +75,19 @@ export default {
       }
     });
 
+    watch(citySelected, () => {
+      emit("locationSelected", citySelected);
+    });
+
     const {
       countries,
       error: errorGetCountries,
       loadCountries,
     }: GetCountries = getCountries();
 
-    const loadCitiesAndAssignResponse = async (countrySelectedValue: CountryObjFromAPI) => {
+    const loadCitiesAndAssignResponse = async (
+      countrySelectedValue: CountryObjFromAPI
+    ) => {
       const {
         cities: citiesFetched,
         error: errorGetCities,
