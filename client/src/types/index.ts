@@ -8,4 +8,13 @@ export type CityObjFromAPI = {
   coord: Coordinate;
 };
 
-type Coordinate = { lon: number; lat: number };
+export type GetWeatherForecastByLocationFromAPI<Coordinate> = {
+  current: any;
+  daily: any;
+  lat: keyof Coordinate;
+  lon: keyof Coordinate;
+  timezone: string;
+  timezone_offset: number;
+};
+
+export type Coordinate = { lon: number; lat: number };
