@@ -8,7 +8,7 @@ export const getCountries = (): GetCountries => {
 
   const loadCountries = async (): Promise<void> => {
     try {
-      getCountriesFromApi();
+      await getCountriesFromApi();
     } catch (err) {
       error.value = err as string;
     }

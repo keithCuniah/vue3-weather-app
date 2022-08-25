@@ -1,60 +1,47 @@
-import { ref, Ref, toRefs } from "vue";
-import { CityObjFromAPI, Coordinate } from "../types";
+import { ref, Ref } from "vue";
+import { Coordinate } from "../types";
 
-export const getWeather = (location: Ref<CityObjFromAPI>) => {
-  const weatherObj = ref<any | {}>({});
+export const getWeatherAndForecast = (
+  location: Ref<any>
+): GetWeatherAndForecast => {
+  const weatherAndForecastObj = ref<any | {}>({});
   let error = ref<string | null>(null);
 
-  const loadWeather = async (): Promise<void> => {
+  let urlGetWeatherAndForecast = initUrlWithParams(location);
+
+  const loadWeatherAndForecast = async (): Promise<void> => {
     try {
-      getWeatherFromApi();
+      const data: Response = await fetch(urlGetWeatherAndForecast);
+      if (!data.ok) {
+        throw Error("No data available");
+      }
+      weatherAndForecastObj.value = await data.json();
     } catch (err) {
       error.value = err as string;
     }
   };
 
-  const getWeatherFromApi = async () => {
-    const params = initParamsForUrl();
-    let urlGetweather = new URL(
-      `http://localhost:4000/api/weather/${params.id}`
-    );
-    Object.keys(params).forEach((key) => {
-      console.log(key, params[key as ParamsKeys]);
-      urlGetweather.searchParams.append(key, params[key as keyof Params]);
-    });
-    console.log(urlGetweather);
-    const data: Response = await fetch(urlGetweather);
-    if (!data.ok) {
-      throw Error("No data available");
-    }
-    weatherObj.value = await data.json();
-  };
+  return { weatherAndForecastObj, error, loadWeatherAndForecast };
+};
 
-  const initParamsForUrl = (): Params => {
-    const { id, country, coord } = toRefs(location.value);
+const initUrlWithParams = (location: Ref<any>): URL => {
+  const params = {
+    id: location.value.id,
+    country: location.value.country,
+    ...location.value.coord,
+  } as unknown as Params;
 
-    const params = {
-      id: id.value,
-      country: country.value,
-      ...coord.value,
-    } as unknown as Params;
-    return params;
-  };
+  let url = new URL(`http:localhost:4000/api/weather/${params.id}`);
+  Object.keys(params).forEach((key) =>
+    url.searchParams.append(key, params[key as keyof Params])
+  );
+  return url;
+};
 
-  const createUrlWithParams = (params: Params): URL => {
-    let urlGetweather = new URL(
-      `http://localhost:4000/api/weather/${params.id}`
-    );
-    Object.keys(params).forEach((key) => {
-      console.log(key, params[key as ParamsKeys]);
-      urlGetweather.searchParams.append(key, params[key as keyof Params]);
-    });
-    console.log(urlGetweather);
-    return urlGetweather;
-  };
-
-  console.log(weatherObj.value);
-  return { weatherObj, error, loadWeather };
+export type GetWeatherAndForecast = {
+  weatherAndForecastObj: Ref<any>;
+  error: Ref<string | null>;
+  loadWeatherAndForecast: () => Promise<void>;
 };
 
 type Params = {
@@ -63,4 +50,3 @@ type Params = {
   lat: keyof Coordinate;
   lon: keyof Coordinate;
 };
-type ParamsKeys = keyof Params;

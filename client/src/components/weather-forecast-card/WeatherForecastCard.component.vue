@@ -7,17 +7,21 @@
     </template>
     <template v-slot:content>
       <div class="">
-        <pre>{{ location }} </pre>
+        <pre>{{ weatherOfToday }} </pre>
       </div>
     </template>
   </Card>
 </template>
 
 <script lang="ts">
-import { onMounted, PropType, ref, toRef, toRefs } from "vue";
+import { onMounted, PropType, ref, toRefs } from "vue";
 import { CityObjFromAPI } from "../../types";
 import Card from "../card/Card.component.vue";
-import { getWeather } from "../../composables/getWeatherForecastByLocation.composable";
+import {
+  getWeatherAndForecast,
+  GetWeatherAndForecast,
+} from "../../composables/getWeatherForecastByLocation.composable";
+
 export default {
   props: {
     location: {
@@ -29,45 +33,28 @@ export default {
     Card,
   },
   setup(props: any) {
-    console.log(props.location);
     const { location } = toRefs<any>(props);
-    const weather = ref<any | {}>({});
-    const forecast = ref<any | {}>({});
+    const weatherOfToday = ref<any | {}>({});
+    const forecast7Days = ref<any[] | []>([]);
 
-    onMounted(async() => {
-      await loadWeatherAndAssignResponse();
+    onMounted(async () => {
+      await loadWeatherAndForecast();
+      initWeatherAndForecast7Days();
     });
 
-    const loadWeatherAndAssignResponse = async () => {
-      const {
-        weatherObj: weatherFetched,
-        error: errorGetWeather,
-        loadWeather,
-      }: any = getWeather(location);
-      await loadWeather();
-      weather.value = weatherFetched.value;
+    const {
+      weatherAndForecastObj,
+      error: errorGetWeatherAndForecast,
+      loadWeatherAndForecast,
+    }: GetWeatherAndForecast = getWeatherAndForecast(location);
+
+    const initWeatherAndForecast7Days = () => {
+      const { current, daily } = toRefs<any>(weatherAndForecastObj.value);
+      weatherOfToday.value = current.value;
+      forecast7Days.value = daily.value;
     };
 
-    console.log(weather.value);
-    // const getWeather = async () => {
-    //   const params = {
-    //     id: id.value,
-    //     country: country.value,
-    //     ...coord.value,
-    //   } as unknown as any;
-    //   console.log(params);
-    //   let urlGetweather = new URL(
-    //     `http://localhost:4000/api/weather/${id.value}`
-    //   );
-    //   Object.keys(params).forEach((key: any) =>
-    //     urlGetweather.searchParams.append(key, params[key])
-    //   );
-    //   const data: Response = await fetch(urlGetweather);
-    //   weather.value = await data.json();
-    //   console.log(weather.value);
-    // };
-
-    return { weather };
+    return { weatherOfToday, forecast7Days };
   },
 };
 </script>
