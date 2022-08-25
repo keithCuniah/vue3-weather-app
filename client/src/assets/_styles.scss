@@ -1,0 +1,53 @@
+.drop {
+  animation: drop 0.5s infinite;
+  transform-origin: 50% 50%;
+}
+@keyframes drop {
+  from {
+    transform: translateX(0, 0);
+  }
+  to {
+    transform: translate(-10px, 10px);
+  }
+}
+
+.snow-flake-left {
+  animation: draw-snow-flake-left 0.5s infinite;
+  transform-origin: 50% 50%;
+}
+@keyframes draw-snow-flake-left  {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(0,10px);
+  }
+}
+
+.snow-flake-right {
+  animation: draw-snow-flake-right 0.5s infinite 5s;
+  transform-origin: 50% 50%;
+}
+@keyframes draw-snow-flake-right  {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(0,10px);
+  }
+}
+
+.sun{
+  animation: draw-sun 10s infinite alternate;
+  fill: white;
+  transform-origin: 50% 50%;
+}
+@keyframes draw-sun{
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+    fill: yellow;
+  }
+}
