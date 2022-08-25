@@ -31,7 +31,7 @@ const initUrlWithParams = (location: Ref<any>): URL => {
     ...location.value.coord,
   } as unknown as Params;
 
-  let url = new URL(`http:localhost:4000/api/weather/${params.id}`);
+  let url = new URL(`http:localhost:4000/api/weather-forecast/${params.id}`);
   Object.keys(params).forEach((key) =>
     url.searchParams.append(key, params[key as keyof Params])
   );

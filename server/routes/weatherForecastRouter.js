@@ -25,7 +25,7 @@ function routes(listOfCountries, rawDataGroupByCountry) {
   // NOTE: In the api, a city can have several coordinate
   //   the link which call the data use coordinate as parametes
   weatherForecastRouter
-    .route('/:weatherOrForecast/:locationID')
+    .route('/weather-forecast/:locationID')
     .get(_weatherForecastcontroller.getWeatherForecastByCoord);
   return weatherForecastRouter;
 }

@@ -42,12 +42,9 @@ app.get("/api", (req, res) => {
         </li>
 
         <li>To get the current weather of a specific location (country or city)
-          <b>/api/weather/{localisation_id}</b>
+          <b>/api/weather-forecast/{localisation_id}</b>
         </li>
-
-        <li>To get the forecast of a specific location (country or city)
-          <b>/api/forecast/{localisation_id}</b>
-        </li>
+        
       </ul>
     </div>`
   );
