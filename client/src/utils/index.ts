@@ -3,6 +3,9 @@ export const sortArrayOfObjByKey = <T>(
   keyOfObj: keyof T
 ) => arrayOfObj.sort((a: T, b: T) => (a[keyOfObj] > b[keyOfObj] ? 1 : -1));
 
+export const capitalizedWord = (word: string): string =>
+  word.charAt(0).toUpperCase() + word.slice(1).toLocaleLowerCase();
+
 export const convertDegToCardinal = (winDeg: number): string => {
   const directions = [
     "N",
