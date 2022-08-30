@@ -1,28 +1,31 @@
 <template>
-  <Card v-if="showCard">
-    <template v-slot:header>
-      <div class="">
-        <HeaderCard :location="location" :weatherOfToday="weatherOfToday" />
-        <!-- <pre>{{ location }} </pre> -->
-      </div>
-    </template>
-    <template v-slot:content>
-      <!-- <div class="">
+  <transition name="fade">
+    <Card v-if="showCard">
+      <template v-slot:header>
+        <div class="">
+          <HeaderCard :location="location" :weatherOfToday="weatherOfToday" />
+        </div>
+      </template>
+      <template v-slot:content>
+        <!-- <div class="">
         <pre>{{ weatherOfToday }} </pre>
       </div> -->
-    </template>
-  </Card>
+      </template>
+    </Card>
+  </transition>
 </template>
 
 <script lang="ts">
 import { onMounted, PropType, ref, toRefs } from "vue";
-import { CityObjFromAPI } from "../../types";
+import {
+  CityObjFromAPI,
+  WeatherOfToday,
+  Forecast7Days,
+  GetWeatherAndForecast,
+} from "../../types";
 import Card from "../card/Card.component.vue";
 import HeaderCard from "./WeatherHeaderCard.vue";
-import {
-  getWeatherAndForecast,
-  GetWeatherAndForecast,
-} from "../../composables/getWeatherForecastByLocation.composable";
+import { getWeatherAndForecast } from "../../composables/getWeatherForecastByLocation.composable";
 
 export default {
   props: {
@@ -37,8 +40,8 @@ export default {
   },
   setup(props: any) {
     const { location } = toRefs<any>(props);
-    const weatherOfToday = ref<any | {}>({});
-    const forecast7Days = ref<any[] | []>([]);
+    const weatherOfToday = ref<WeatherOfToday | {}>({});
+    const forecast7Days = ref<Forecast7Days | []>([]);
     const showCard = ref<boolean>(false);
 
     onMounted(async () => {
@@ -64,4 +67,14 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease-in;
+}
+</style>

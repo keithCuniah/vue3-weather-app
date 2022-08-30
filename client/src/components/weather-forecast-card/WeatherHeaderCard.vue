@@ -1,18 +1,31 @@
 <template>
   <div class="card-info">
     <div class="icon-component">
-      <IconComponent :name="weatherIcon" :colorFill="'white'" />
+      <IconComponent :name="getWeatherIcon" :colorFill="'white'" />
     </div>
     <div class="descriptions">
-      <span class="description-item"> {{ locationNameAndCountry }} </span>
       <span class="description-item">
-        {{ currentTemperatureInCelcius }}
+        {{
+          $filters.formatLocationNameAndCountry(location.name, location.country)
+        }}
       </span>
       <span class="description-item">
-        {{ currentHumidity }}
+        {{ $filters.formatTemperatureToCelcius(weatherOfToday.temp) }}
       </span>
-      <span class="description-item">{{ formatUVI }}</span>
-      <span class="description-item">{{ formatWind }}</span>
+      <span class="description-item">
+        {{ $filters.formatHumidity(weatherOfToday.humidity) }}
+      </span>
+      <span class="description-item">
+        {{ $filters.formatUVI(weatherOfToday.uvi) }}
+      </span>
+      <span class="description-item">
+        {{
+          $filters.formatWind(
+            weatherOfToday.wind_deg,
+            weatherOfToday.wind_speed
+          )
+        }}
+      </span>
     </div>
   </div>
 </template>
@@ -25,7 +38,6 @@ import {
   CorrespondingWeather,
   correspondingIcon,
 } from "../weather-icon/weatherConditions";
-import { convertDegToCardinal } from "../../utils";
 
 export default {
   components: { IconComponent },
@@ -34,9 +46,8 @@ export default {
     weatherOfToday: { type: Object, required: true },
   },
   setup(props: any) {
-    /* COMPUTED */
     //get corresponding icon
-    const weatherIcon = computed(() =>
+    const getWeatherIcon = computed((): string =>
       getIconByWeatherId(props.weatherOfToday.weather[0].id)
     );
 
@@ -55,38 +66,8 @@ export default {
       return currentIcon;
     };
 
-    // format data
-    const locationNameAndCountry = computed(
-      () =>
-        `${
-          props.location.name.charAt(0).toUpperCase() +
-          props.location.name.slice(1).toLowerCase()
-        }, ${props.location.country.toUpperCase()}`
-    );
-
-    const currentTemperatureInCelcius = computed(
-      () => `${Math.round(props.weatherOfToday.temp - 273.15)}º`
-    );
-
-    const currentHumidity = computed(
-      () => `Humidity: ${props.weatherOfToday.humidity}%`
-    );
-
-    const formatUVI = computed(() => {
-      return `UVI: ${props.weatherOfToday.uvi}`;
-    });
-
-    const formatWind = computed(() => {
-      return `Wind: ${convertDegToCardinal(props.weatherOfToday.wind_deg)} ${props.weatherOfToday.wind_speed}kmh`;
-    });
-    console.log(props.weatherOfToday);
     return {
-      weatherIcon,
-      locationNameAndCountry,
-      currentTemperatureInCelcius,
-      currentHumidity,
-      formatUVI,
-      formatWind,
+      getWeatherIcon,
     };
   },
 };
@@ -126,48 +107,3 @@ export default {
   }
 }
 </style>
-
-<!-- <template>
-  {{ location }}
-  <div class="card-info">
-    <div class="icon-component">
-      <IconComponent :name="weatherIcon" :colorFill="'white'" />
-    </div>
-    <div class="descriptions">
-      <span class="description-item">
-        {{ location.name | capitalizedStr }}, {{ country | capitalizedStr }}
-      </span>
-      <span class="description-item">
-        {{ weatherOfToday.temp | tempKelvinToCelcius }}
-      </span>
-      <span class="description-item">
-        {{ weatherOfToday.humidity | formatHumidity }}
-      </span>
-      <span class="description-item">{{ weatherOfToday.uvi | formatUVI }}</span>
-      <span class="description-item">{{
-        weatherOfToday.wind | formatWind
-      }}</span>
-    </div>
-  </div>
-</template>
-
-<script lang="ts">
-import { toRefs } from "vue";
-import IconComponent from "../weather-icon/WeatherIcon.component.vue";
-
-export default {
-  components: { IconComponent },
-  props: {
-    location: { type: Object, required: true },
-    weatherOfToday: { type: Object, required: true },
-  },
-  setup(props: any) {
-    const { location, weatherOfToday } = toRefs<any>(props);
-    console.log(weatherOfToday);
-
-    return { location };
-  },
-};
-</script>
-
-<style lang="scss" scoped></style> -->

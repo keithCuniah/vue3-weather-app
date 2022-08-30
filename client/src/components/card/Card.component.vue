@@ -1,5 +1,5 @@
 <template>
-  <div class="web-component-forecast-weather">
+  <div class="card-forecast-weather">
     <div class="container-area">
       <slot name="header" />
       <slot name="content" />
@@ -16,9 +16,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.web-component-forecast-weather {
+.card-forecast-weather {
   display: flex;
   justify-content: center;
+  margin-inline: 2em;
   .container-area {
     display: flex;
     flex-direction: column;
