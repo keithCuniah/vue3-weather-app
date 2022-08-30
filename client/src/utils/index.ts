@@ -6,7 +6,7 @@ export const sortArrayOfObjByKey = <T>(
 export const capitalizedWord = (word: string): string =>
   word.charAt(0).toUpperCase() + word.slice(1).toLocaleLowerCase();
 
-export const convertDegToCardinal = (winDeg: number): string => {
+export const convertDegToCardinal = (windDeg: number): string => {
   const directions = [
     "N",
     "NNE",
@@ -26,7 +26,7 @@ export const convertDegToCardinal = (winDeg: number): string => {
     "NNW",
   ];
 
-  let section = parseInt(String(winDeg / 22.5 + 0.5), 10);
+  let section = parseInt(String(windDeg / 22.5 + 0.5), 10);
 
   section = section % 16;
 
