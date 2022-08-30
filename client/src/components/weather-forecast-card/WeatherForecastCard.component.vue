@@ -1,14 +1,15 @@
 <template>
-  <Card>
+  <Card v-if="showCard">
     <template v-slot:header>
       <div class="">
-        <pre>{{ location }} </pre>
+        <HeaderCard :location="location" :weatherOfToday="weatherOfToday" />
+        <!-- <pre>{{ location }} </pre> -->
       </div>
     </template>
     <template v-slot:content>
-      <div class="">
+      <!-- <div class="">
         <pre>{{ weatherOfToday }} </pre>
-      </div>
+      </div> -->
     </template>
   </Card>
 </template>
@@ -17,6 +18,7 @@
 import { onMounted, PropType, ref, toRefs } from "vue";
 import { CityObjFromAPI } from "../../types";
 import Card from "../card/Card.component.vue";
+import HeaderCard from "./WeatherHeaderCard.vue";
 import {
   getWeatherAndForecast,
   GetWeatherAndForecast,
@@ -31,11 +33,13 @@ export default {
   },
   components: {
     Card,
+    HeaderCard,
   },
   setup(props: any) {
     const { location } = toRefs<any>(props);
     const weatherOfToday = ref<any | {}>({});
     const forecast7Days = ref<any[] | []>([]);
+    const showCard = ref<boolean>(false);
 
     onMounted(async () => {
       await loadWeatherAndForecast();
@@ -44,17 +48,18 @@ export default {
 
     const {
       weatherAndForecastObj,
-      error: errorGetWeatherAndForecast,
+      error,
       loadWeatherAndForecast,
     }: GetWeatherAndForecast = getWeatherAndForecast(location);
 
     const initWeatherAndForecast7Days = () => {
       const { current, daily } = toRefs<any>(weatherAndForecastObj.value);
-      weatherOfToday.value = current.value;
-      forecast7Days.value = daily.value;
+      weatherOfToday.value = current?.value;
+      forecast7Days.value = daily?.value;
+      showCard.value = true;
     };
 
-    return { weatherOfToday, forecast7Days };
+    return { weatherOfToday, forecast7Days, error, showCard };
   },
 };
 </script>

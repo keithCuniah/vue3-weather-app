@@ -1,6 +1,6 @@
 import { Ref, ref } from "vue";
 import { CountryObjFromAPI } from "../types";
-import sortArrayOfObjByKey from "../utils";
+import { sortArrayOfObjByKey } from "../utils";
 
 export const getCountries = (): GetCountries => {
   const countries = ref<CountryObjFromAPI[]>([]);
