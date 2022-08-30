@@ -1,10 +1,18 @@
 import { ref, Ref } from "vue";
-import { Coordinate } from "../types";
+import {
+  CityObjFromAPI,
+  Coordinate,
+  GetWeatherForecastByLocationFromAPI,
+  GetWeatherAndForecast,
+  Params,
+} from "../types";
 
 export const getWeatherAndForecast = (
-  location: Ref<any>
+  location: Ref<CityObjFromAPI>
 ): GetWeatherAndForecast => {
-  const weatherAndForecastObj = ref<any | {}>({});
+  const weatherAndForecastObj = ref<
+    GetWeatherForecastByLocationFromAPI<Coordinate> | {}
+  >({});
   let error = ref<string | null>(null);
 
   let urlGetWeatherAndForecast = initUrlWithParams(location);
@@ -16,6 +24,7 @@ export const getWeatherAndForecast = (
         throw Error("No data available");
       }
       weatherAndForecastObj.value = await data.json();
+      console.log(weatherAndForecastObj.value);
     } catch (err) {
       error.value = err as string;
     }
@@ -24,7 +33,7 @@ export const getWeatherAndForecast = (
   return { weatherAndForecastObj, error, loadWeatherAndForecast };
 };
 
-const initUrlWithParams = (location: Ref<any>): URL => {
+const initUrlWithParams = (location: Ref<CityObjFromAPI>): URL => {
   const params = {
     id: location.value.id,
     country: location.value.country,
@@ -36,17 +45,4 @@ const initUrlWithParams = (location: Ref<any>): URL => {
     url.searchParams.append(key, params[key as keyof Params])
   );
   return url;
-};
-
-export type GetWeatherAndForecast = {
-  weatherAndForecastObj: Ref<any>;
-  error: Ref<string | null>;
-  loadWeatherAndForecast: () => Promise<void>;
-};
-
-type Params = {
-  id: string;
-  country: string;
-  lat: keyof Coordinate;
-  lon: keyof Coordinate;
 };
