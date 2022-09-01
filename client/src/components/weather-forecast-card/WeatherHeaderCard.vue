@@ -1,37 +1,30 @@
 <template>
-  <div class="card-info">
+  <div class="card-header">
     <div class="icon-component">
       <IconComponent :name="getWeatherIcon" :colorFill="'white'" />
     </div>
     <div class="descriptions">
       <span class="description-item">
-        {{
-          $filters.formatLocationNameAndCountry(location.name, location.country)
-        }}
+        {{ locationNameAndCountry }}
       </span>
       <span class="description-item">
-        {{ $filters.formatTemperatureToCelcius(weatherOfToday.temp) }}
+        {{ temperature }}
       </span>
       <span class="description-item">
-        {{ $filters.formatHumidity(weatherOfToday.humidity) }}
+        {{ humidity }}
       </span>
       <span class="description-item">
-        {{ $filters.formatUVI(weatherOfToday.uvi) }}
+        {{ uvi }}
       </span>
       <span class="description-item">
-        {{
-          $filters.formatWind(
-            weatherOfToday.wind_deg,
-            weatherOfToday.wind_speed
-          )
-        }}
+        {{ windDirectionAndVelocity }}
       </span>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed } from "vue";
+import { ComponentInternalInstance, computed, getCurrentInstance, toRefs } from "vue";
 import IconComponent from "../weather-icon/WeatherIcon.component.vue";
 import {
   correspondingWeather,
@@ -46,6 +39,16 @@ export default {
     weatherOfToday: { type: Object, required: true },
   },
   setup(props: any) {
+    const { location, weatherOfToday } = toRefs<any>(props);
+    const proxy = getCurrentInstance() as ComponentInternalInstance;
+    const {
+      formatLocationNameAndCountry,
+      formatTemperatureToCelcius,
+      formatHumidity,
+      formatUVI,
+      formatWind,
+    } = proxy.appContext.config.globalProperties.$filters;
+
     //get corresponding icon
     const getWeatherIcon = computed((): string =>
       getIconByWeatherId(props.weatherOfToday.weather[0].id)
@@ -66,15 +69,38 @@ export default {
       return currentIcon;
     };
 
+    // format data;
+    const locationNameAndCountry = computed(() =>
+      formatLocationNameAndCountry(location.value.name, location.value.country)
+    );
+    const temperature = computed(() =>
+      formatTemperatureToCelcius(weatherOfToday.value.temp)
+    );
+    const humidity = computed(() =>
+      formatHumidity(weatherOfToday.value.humidity)
+    );
+    const uvi = computed(() => formatUVI(weatherOfToday.value.uvi));
+    const windDirectionAndVelocity = computed(() =>
+      formatWind(weatherOfToday.value.wind_deg, weatherOfToday.value.wind_speed)
+    );
+
+    // console.log("proxy", proxy!.appContext.config.globalProperties.$filters);
     return {
       getWeatherIcon,
+      location,
+      weatherOfToday,
+      locationNameAndCountry,
+      temperature,
+      humidity,
+      uvi,
+      windDirectionAndVelocity,
     };
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.card-info {
+.card-header {
   display: flex;
   flex: 1;
   .icon-component {

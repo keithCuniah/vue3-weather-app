@@ -24,7 +24,6 @@ export const getWeatherAndForecast = (
         throw Error("No data available");
       }
       weatherAndForecastObj.value = await data.json();
-      console.log(weatherAndForecastObj.value);
     } catch (err) {
       error.value = err as string;
     }

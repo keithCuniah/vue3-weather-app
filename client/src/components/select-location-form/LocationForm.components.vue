@@ -5,15 +5,7 @@
       Select a country and then a city to show the weather & forecast from this
       location
     </p>
-    <div class="loading-spinner-content">
-      <q-inner-loading
-        :showing="!countries.length"
-        label="Please wait, countries are loaded..."
-        label-class="text-teal"
-        label-style="font-size: 1.1em"
-      >
-      </q-inner-loading>
-    </div>
+
     <div class="q-pa-md select-input-content" v-if="countries.length">
       <SelectInput
         v-if="countries.length"
@@ -22,10 +14,9 @@
         label="Select a country"
         optionValue="id"
         optionLabel="country"
-        @onSelect="($event: Ref<CountryObjFromAPI>) => (countrySelected = $event.value)"
+        @onSelect="onSelectCountry"
         :isDisabled="false"
-      >
-      </SelectInput>
+      />
 
       <SelectInput
         :defaultOption="citySelected"
@@ -33,10 +24,9 @@
         label="Select a city"
         optionValue="id"
         optionLabel="name"
-        @onSelect="($event: Ref<CountryObjFromAPI>) => (citySelected = $event.value)"
+        @onSelect="onSelectCity"
         :isDisabled="countrySelected === null"
-      >
-      </SelectInput>
+      />
     </div>
   </div>
 </template>
@@ -53,9 +43,11 @@ import {
   GetCitiesByCountry,
 } from "../../composables/getCitiesByCountry.composable";
 import { CountryObjFromAPI, CityObjFromAPI } from "../../types";
+import LoadingSpinner from "./../loading-spinner/LoadingSpinner.component.vue";
 
 export default {
   components: {
+    LoadingSpinner,
     SelectInput,
   },
   setup(props: any, { emit }: any) {
@@ -64,7 +56,13 @@ export default {
     const cities = ref<CityObjFromAPI[]>([]);
 
     onMounted(async () => {
-      await loadCountries();
+      try {
+        emit("onLoading", "country");
+        await loadCountries();
+        emit("loaded");
+      } catch (err) {
+        console.log(err);
+      }
     });
 
     watch(countrySelected, async () => {
@@ -94,10 +92,37 @@ export default {
         loadCities,
       }: GetCitiesByCountry = getCitiesByCountry(countrySelectedValue);
 
-      await loadCities();
-      cities.value = citiesFetched.value;
+      try {
+        emit("onLoading", "city");
+        await loadCities();
+        cities.value = citiesFetched.value;
+        emit("loaded");
+      } catch (err) {
+        console.log(err);
+      }
     };
-    return { countries, countrySelected, cities, citySelected };
+
+    const onSelectCountry = ($event: Ref<CountryObjFromAPI>) => {
+      countrySelected.value = $event.value;
+      initSelectedCity();
+    };
+
+    const onSelectCity = ($event: Ref<CityObjFromAPI>) => {
+      citySelected.value = $event.value;
+    };
+
+    const initSelectedCity = () => {
+      citySelected.value = null;
+    };
+
+    return {
+      countries,
+      countrySelected,
+      cities,
+      citySelected,
+      onSelectCountry,
+      onSelectCity,
+    };
   },
 };
 </script>
