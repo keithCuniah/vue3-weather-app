@@ -32,8 +32,9 @@
 </template>
 
 <script lang="ts">
-import { onMounted, Ref, ref, watch } from "vue";
+import { onMounted, Ref, ref, SetupContext, watch } from "vue";
 import SelectInput from "./SelectInput.component.vue";
+import { onAwaitCall } from "../../utils";
 import {
   getCountries,
   GetCountries,
@@ -50,19 +51,13 @@ export default {
     LoadingSpinner,
     SelectInput,
   },
-  setup(props: any, { emit }: any) {
+  setup(props: any, context: SetupContext) {
     const countrySelected = ref<CountryObjFromAPI | null>(null);
     const citySelected = ref<CityObjFromAPI | null>(null);
     const cities = ref<CityObjFromAPI[]>([]);
 
     onMounted(async () => {
-      try {
-        emit("onLoading", "country");
-        await loadCountries();
-        emit("loaded");
-      } catch (err) {
-        console.log(err);
-      }
+      await onAwaitCall(context, loadCountries, "countries");
     });
 
     watch(countrySelected, async () => {
@@ -74,7 +69,7 @@ export default {
     });
 
     watch(citySelected, () => {
-      emit("locationSelected", citySelected);
+      context.emit("locationSelected", citySelected);
     });
 
     const {
@@ -92,13 +87,10 @@ export default {
         loadCities,
       }: GetCitiesByCountry = getCitiesByCountry(countrySelectedValue);
 
-      try {
-        emit("onLoading", "city");
-        await loadCities();
+      await onAwaitCall(context, loadCities, "cities");
+
+      if (errorGetCities.value === null) {
         cities.value = citiesFetched.value;
-        emit("loaded");
-      } catch (err) {
-        console.log(err);
       }
     };
 
