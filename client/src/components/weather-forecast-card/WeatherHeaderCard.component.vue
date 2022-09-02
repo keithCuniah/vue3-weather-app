@@ -31,6 +31,7 @@ import {
   toRefs,
 } from "vue";
 import IconComponent from "../weather-icon/WeatherIcon.component.vue";
+import { getIconByWeatherId } from "../../utils";
 import {
   correspondingWeather,
   CorrespondingWeather,
@@ -58,21 +59,6 @@ export default {
     const getWeatherIcon = computed((): string =>
       getIconByWeatherId(props.weatherOfToday.weather[0].id)
     );
-
-    const getIconByWeatherId = (weatherId: number): string => {
-      // This method return the corresponding icon depending on weather id
-      // get corresponding weather from id
-      const currentWeather = Object.keys(correspondingWeather).find((key) =>
-        correspondingWeather[key as keyof CorrespondingWeather].includes(
-          weatherId
-        )
-      );
-
-      // get corresponging icon
-      const currentIcon =
-        correspondingIcon[currentWeather as keyof CorrespondingWeather];
-      return currentIcon;
-    };
 
     // format data;
     const locationNameAndCountry = computed(() =>
