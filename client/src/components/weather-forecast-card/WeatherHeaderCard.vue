@@ -24,7 +24,12 @@
 </template>
 
 <script lang="ts">
-import { ComponentInternalInstance, computed, getCurrentInstance, toRefs } from "vue";
+import {
+  ComponentInternalInstance,
+  computed,
+  getCurrentInstance,
+  toRefs,
+} from "vue";
 import IconComponent from "../weather-icon/WeatherIcon.component.vue";
 import {
   correspondingWeather,
@@ -84,7 +89,6 @@ export default {
       formatWind(weatherOfToday.value.wind_deg, weatherOfToday.value.wind_speed)
     );
 
-    // console.log("proxy", proxy!.appContext.config.globalProperties.$filters);
     return {
       getWeatherIcon,
       location,

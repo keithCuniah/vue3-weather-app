@@ -15,8 +15,11 @@
         optionValue="id"
         optionLabel="country"
         @onSelect="onSelectCountry"
-        :isDisabled="false"
+        :isDisabled="errorGetCountries"
       />
+      <span v-if="errorGetCountries">
+        There is an error when fetching the countries</span
+      >
 
       <SelectInput
         :defaultOption="citySelected"
@@ -25,7 +28,7 @@
         optionValue="id"
         optionLabel="name"
         @onSelect="onSelectCity"
-        :isDisabled="countrySelected === null"
+        :isDisabled="countrySelected === null || errorGetCountries"
       />
     </div>
   </div>
@@ -110,6 +113,7 @@ export default {
     return {
       countries,
       countrySelected,
+      errorGetCountries,
       cities,
       citySelected,
       onSelectCountry,

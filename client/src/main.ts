@@ -6,6 +6,7 @@ import { Quasar } from "quasar";
 import { convertDegToCardinal, capitalizedWord } from "./utils";
 import "@quasar/extras/material-icons/material-icons.css";
 import "quasar/src/css/index.sass";
+import { convertVelocityMeterBySecondInKilometerByHour } from "./utils";
 
 const app = createApp(App);
 app.use(router);
@@ -13,8 +14,15 @@ app.use(Quasar, { config: {} });
 app.mount("#app");
 
 app.config.globalProperties.$filters = {
-  formatWind(windDegreeDirection: number, windSpeed: number | string): string {
-    return `Wind: ${convertDegToCardinal(windDegreeDirection)} ${windSpeed}kmh`;
+  formatWind(
+    windDegreeDirection: number,
+    windSpeedInMeterBySecond: number | string
+  ): string {
+    return `Wind: ${convertDegToCardinal(
+      windDegreeDirection
+    )} ${convertVelocityMeterBySecondInKilometerByHour(
+      +windSpeedInMeterBySecond
+    )}km/h`;
   },
   formatUVI(uvi: number | string) {
     return `UVI: ${uvi}`;

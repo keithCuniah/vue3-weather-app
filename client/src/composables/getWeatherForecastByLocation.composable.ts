@@ -8,14 +8,14 @@ import {
 } from "../types";
 
 export const getWeatherAndForecast = (
-  location: Ref<CityObjFromAPI>
+  location: CityObjFromAPI
 ): GetWeatherAndForecast => {
   const weatherAndForecastObj = ref<
     GetWeatherForecastByLocationFromAPI<Coordinate> | {}
   >({});
   let error = ref<string | null>(null);
 
-  let urlGetWeatherAndForecast = initUrlWithParams(location);
+  let urlGetWeatherAndForecast = location ? initUrlWithParams(location) : "";
 
   const loadWeatherAndForecast = async (): Promise<void> => {
     try {
@@ -32,11 +32,11 @@ export const getWeatherAndForecast = (
   return { weatherAndForecastObj, error, loadWeatherAndForecast };
 };
 
-const initUrlWithParams = (location: Ref<CityObjFromAPI>): URL => {
+const initUrlWithParams = (location: CityObjFromAPI): URL => {
   const params = {
-    id: location.value.id,
-    country: location.value.country,
-    ...location.value.coord,
+    id: location.id,
+    country: location.country,
+    ...location.coord,
   } as unknown as Params;
 
   let url = new URL(`http:localhost:4000/api/weather-forecast/${params.id}`);

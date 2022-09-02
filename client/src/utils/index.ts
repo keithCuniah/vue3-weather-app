@@ -48,3 +48,7 @@ export const convertDegToCardinal = (windDeg: number): string => {
 
   return directions[section];
 };
+
+export const convertVelocityMeterBySecondInKilometerByHour = (
+  velocityInMeterBySecond: number
+): number => Math.round(velocityInMeterBySecond * 3.6);
