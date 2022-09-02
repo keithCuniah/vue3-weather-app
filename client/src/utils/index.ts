@@ -1,4 +1,9 @@
 import { SetupContext } from "vue";
+import {
+  correspondingWeather,
+  CorrespondingWeather,
+  correspondingIcon,
+} from "../components/weather-icon/weatherConditions";
 
 export const sortArrayOfObjByKey = <T>(
   arrayOfObj: Array<T>,
@@ -17,6 +22,19 @@ export const onAwaitCall = async (
   } catch (err) {
     console.log(err);
   }
+};
+
+export const getIconByWeatherId = (weatherId: number): string => {
+  // This method return the corresponding icon depending on weather id
+  // get corresponding weather from id
+  const currentWeather = Object.keys(correspondingWeather).find((key) =>
+    correspondingWeather[key as keyof CorrespondingWeather].includes(weatherId)
+  );
+
+  // get corresponging icon
+  const currentIcon =
+    correspondingIcon[currentWeather as keyof CorrespondingWeather];
+  return currentIcon;
 };
 
 export const capitalizedWord = (word: string): string =>
