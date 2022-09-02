@@ -1,25 +1,26 @@
 <template>
-  <!-- <transition name="fade"> -->
-  <Card>
-    <template v-slot:header>
-      <div class="">
-        <HeaderCard :location="location" :weatherOfToday="weatherOfToday" />
-      </div>
-    </template>
-    <template v-slot:content>
-      <div class="">
-        <!-- <pre>{{ Forecast7Days }} </pre> -->
-      </div>
-    </template>
-  </Card>
-  <!-- </transition> -->
+  <transition name="fade">
+    <Card>
+      <template v-slot:header>
+        <div class="header-slot">
+          <HeaderCard :location="location" :weatherOfToday="weatherOfToday" />
+        </div>
+      </template>
+      <template v-slot:content>
+        <div class="content-slot">
+          <ContentCard :forecast7Days="forecast7Days" />
+        </div>
+      </template>
+    </Card>
+  </transition>
 </template>
 
 <script lang="ts">
 import { PropType } from "vue";
 import { CityObjFromAPI, WeatherOfToday, Forecast7Days } from "../../types";
 import Card from "../card/Card.component.vue";
-import HeaderCard from "./WeatherHeaderCard.vue";
+import HeaderCard from "./WeatherHeaderCard.component.vue";
+import ContentCard from "./ForecastContentCard.component.vue";
 
 export default {
   props: {
@@ -39,11 +40,13 @@ export default {
   components: {
     Card,
     HeaderCard,
+    ContentCard,
   },
 };
 </script>
 
 <style lang="scss" scoped>
+
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
