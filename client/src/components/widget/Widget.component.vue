@@ -47,9 +47,7 @@ export default {
     const temperatureMin = computed(() =>
       formatTemperatureToCelcius(forecast.value.temp.min)
     );
-    const forecastDate = computed(() =>
-    formatDate(forecast.value.dt)
-    );
+    const forecastDate = computed(() => formatDate(forecast.value.dt));
 
     return { forecastIcon, temperatureMax, temperatureMin, forecastDate };
   },
@@ -76,6 +74,10 @@ export default {
   letter-spacing: 0em;
   text-align: left;
   color: white;
+  &:first-child {
+    text-align: center;
+    min-width: 5em;
+  }
   &:nth-last-child(2) {
     // color: $temp-hot;
     color: red;
