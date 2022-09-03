@@ -1,6 +1,6 @@
 <template>
   <div class="widget-container">
-    <div class="widget-item">{{ forecast.dt }}</div>
+    <div class="widget-item">{{ forecastDate }}</div>
     <div class="widget-item">
       <div class="icon-component">
         <IconComponent :name="forecastIcon" :colorFill="'white'" />
@@ -32,7 +32,7 @@ export default {
   components: { IconComponent },
   setup(props: any) {
     const proxy = getCurrentInstance() as ComponentInternalInstance;
-    const { formatTemperatureToCelcius } =
+    const { formatTemperatureToCelcius, formatDate } =
       proxy.appContext.config.globalProperties.$filters;
     const { forecast } = toRefs<any>(props);
 
@@ -47,8 +47,11 @@ export default {
     const temperatureMin = computed(() =>
       formatTemperatureToCelcius(forecast.value.temp.min)
     );
+    const forecastDate = computed(() =>
+    formatDate(forecast.value.dt)
+    );
 
-    return { forecastIcon, temperatureMax, temperatureMin };
+    return { forecastIcon, temperatureMax, temperatureMin, forecastDate };
   },
 };
 </script>
@@ -81,10 +84,6 @@ export default {
     // color: $temp-cold;
     color: cadetblue;
   }
-}
-
-.icon-component {
-  // min-height: 2em;
 }
 
 @media (max-width: 500px) {

@@ -70,3 +70,6 @@ export const convertDegToCardinal = (windDeg: number): string => {
 export const convertVelocityMeterBySecondInKilometerByHour = (
   velocityInMeterBySecond: number
 ): number => Math.round(velocityInMeterBySecond * 3.6);
+
+export const getDayFromTimestamp = (timeStamp: number): string =>
+  new Date(timeStamp * 1000).toLocaleString("en-US", { weekday: "long" });
