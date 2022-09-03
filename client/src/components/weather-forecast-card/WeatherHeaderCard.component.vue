@@ -31,7 +31,7 @@ import {
   toRefs,
 } from "vue";
 import IconComponent from "../weather-icon/WeatherIcon.component.vue";
-import { getIconByWeatherId } from "../../utils";
+import { getIconByWeatherId } from "../../utils/weatherUtils";
 import {
   correspondingWeather,
   CorrespondingWeather,

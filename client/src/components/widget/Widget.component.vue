@@ -19,7 +19,7 @@ import {
   PropType,
   toRefs,
 } from "vue";
-import { getIconByWeatherId } from "../../utils";
+import { getIconByWeatherId } from "../../utils/weatherUtils";
 import IconComponent from "../weather-icon/WeatherIcon.component.vue";
 
 export default {
