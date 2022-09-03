@@ -35,7 +35,6 @@ export default {
     const { formatTemperatureToCelcius } =
       proxy.appContext.config.globalProperties.$filters;
     const { forecast } = toRefs<any>(props);
-    console.log(forecast.value);
 
     const forecastIcon = computed((): string =>
       getIconByWeatherId(forecast.value.weather[0].id)
@@ -48,6 +47,7 @@ export default {
     const temperatureMin = computed(() =>
       formatTemperatureToCelcius(forecast.value.temp.min)
     );
+
     return { forecastIcon, temperatureMax, temperatureMin };
   },
 };
@@ -60,6 +60,7 @@ export default {
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
+  gap: 5px;
   .icon-component {
     width: 3em;
   }
@@ -81,6 +82,11 @@ export default {
     color: cadetblue;
   }
 }
+
+.icon-component {
+  // min-height: 2em;
+}
+
 @media (max-width: 500px) {
   .widget-container {
     flex-direction: row;

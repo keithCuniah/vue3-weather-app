@@ -29,5 +29,6 @@ export default {
 .widget-area {
   display: flex;
   flex-wrap: wrap;
+  gap: 1em;
 }
 </style>
