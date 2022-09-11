@@ -36,6 +36,8 @@
 
 <script lang="ts">
 import { onMounted, Ref, ref, SetupContext, watch } from "vue";
+import { useCountriesStore } from "../../stores/countries.store";
+import { useCitiesStore } from "../../stores/cities.store";
 import SelectInput from "./SelectInput.component.vue";
 import { onAwaitCall } from "../../utils";
 import {
@@ -56,11 +58,17 @@ export default {
   },
   setup(props: any, context: SetupContext) {
     const countrySelected = ref<CountryObjFromAPI | null>(null);
+    const storeCountries = useCountriesStore();
     const citySelected = ref<CityObjFromAPI | null>(null);
     const cities = ref<CityObjFromAPI[]>([]);
+    const {
+      countries,
+      error: errorGetCountries,
+      loadCountries,
+    }: GetCountries = getCountries();
 
-    onMounted(async () => {
-      await onAwaitCall(context, loadCountries, "countries");
+    onMounted(() => {
+      initCountries();
     });
 
     watch(countrySelected, async () => {
@@ -75,11 +83,14 @@ export default {
       context.emit("locationSelected", citySelected);
     });
 
-    const {
-      countries,
-      error: errorGetCountries,
-      loadCountries,
-    }: GetCountries = getCountries();
+    const initCountries = async () => {
+      if (storeCountries.isCountriesInStore) {
+        countries.value = storeCountries.countries;
+      } else {
+        await onAwaitCall(context, loadCountries, "countries");
+        storeCountries.setCountries(countries.value);
+      }
+    };
 
     const loadCitiesAndAssignResponse = async (
       countrySelectedValue: CountryObjFromAPI
@@ -118,6 +129,7 @@ export default {
       citySelected,
       onSelectCountry,
       onSelectCity,
+      storeCountries,
     };
   },
 };
