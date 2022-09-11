@@ -59,6 +59,7 @@ export default {
   setup(props: any, context: SetupContext) {
     const countrySelected = ref<CountryObjFromAPI | null>(null);
     const storeCountries = useCountriesStore();
+    const storeCities = useCitiesStore();
     const citySelected = ref<CityObjFromAPI | null>(null);
     const cities = ref<CityObjFromAPI[]>([]);
     const {
@@ -110,6 +111,7 @@ export default {
 
     const onSelectCountry = ($event: Ref<CountryObjFromAPI>) => {
       countrySelected.value = $event.value;
+      storeCities.setSelectedCountry($event.value);
       initSelectedCity();
     };
 
@@ -119,6 +121,7 @@ export default {
 
     const initSelectedCity = () => {
       citySelected.value = null;
+      storeCities.setSelectedCity(null);
     };
 
     return {
