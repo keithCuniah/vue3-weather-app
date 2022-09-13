@@ -11,7 +11,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import {
   ComponentInternalInstance,
   computed,
@@ -22,36 +22,29 @@ import {
 import { getIconByWeatherId } from "../../utils/weatherUtils";
 import IconComponent from "../weather-icon/WeatherIcon.component.vue";
 
-export default {
-  props: {
-    forecast: {
-      type: Object as PropType<any>,
-      required: true,
-    },
+const props = defineProps({
+  forecast: {
+    type: Object as PropType<any>,
+    required: true,
   },
-  components: { IconComponent },
-  setup(props: any) {
-    const proxy = getCurrentInstance() as ComponentInternalInstance;
-    const { formatTemperatureToCelcius, formatDate } =
-      proxy.appContext.config.globalProperties.$filters;
-    const { forecast } = toRefs<any>(props);
+});
+const proxy = getCurrentInstance() as ComponentInternalInstance;
+const { formatTemperatureToCelcius, formatDate } =
+  proxy.appContext.config.globalProperties.$filters;
+const { forecast } = toRefs<any>(props);
 
-    const forecastIcon = computed((): string =>
-      getIconByWeatherId(forecast.value.weather[0].id)
-    );
+const forecastIcon = computed((): string =>
+  getIconByWeatherId(forecast.value.weather[0].id)
+);
 
-    //format data
-    const temperatureMax = computed(() =>
-      formatTemperatureToCelcius(forecast.value.temp.max)
-    );
-    const temperatureMin = computed(() =>
-      formatTemperatureToCelcius(forecast.value.temp.min)
-    );
-    const forecastDate = computed(() => formatDate(forecast.value.dt));
-
-    return { forecastIcon, temperatureMax, temperatureMin, forecastDate };
-  },
-};
+//format data
+const temperatureMax = computed(() =>
+  formatTemperatureToCelcius(forecast.value.temp.max)
+);
+const temperatureMin = computed(() =>
+  formatTemperatureToCelcius(forecast.value.temp.min)
+);
+const forecastDate = computed(() => formatDate(forecast.value.dt));
 </script>
 
 <style lang="scss" scoped>
@@ -79,12 +72,10 @@ export default {
     min-width: 5em;
   }
   &:nth-last-child(2) {
-    // color: $temp-hot;
-    color: red;
+    color: var(--q-negative);
   }
   &:last-child {
-    // color: $temp-cold;
-    color: cadetblue;
+    color: var(--q-primary);
   }
 }
 

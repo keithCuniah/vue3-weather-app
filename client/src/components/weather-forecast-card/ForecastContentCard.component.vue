@@ -8,21 +8,16 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { PropType } from "vue";
 import Widget from "../widget/Widget.component.vue";
 
-export default {
-  components: {
-    Widget,
+const props = defineProps({
+  forecast7Days: {
+    type: Array as PropType<any[]>,
+    required: true,
   },
-  props: {
-    forecast7Days: {
-      type: Array as PropType<any[]>,
-      required: true,
-    },
-  },
-};
+});
 </script>
 
 <style lang="scss" scoped>

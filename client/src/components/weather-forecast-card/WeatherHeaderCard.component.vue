@@ -23,7 +23,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import {
   ComponentInternalInstance,
   computed,
@@ -32,61 +32,46 @@ import {
 } from "vue";
 import IconComponent from "../weather-icon/WeatherIcon.component.vue";
 import { getIconByWeatherId } from "../../utils/weatherUtils";
-import {
-  correspondingWeather,
-  CorrespondingWeather,
-  correspondingIcon,
-} from "../weather-icon/weatherConditions";
 
-export default {
-  components: { IconComponent },
-  props: {
-    location: { type: Object, required: true },
-    weatherOfToday: { type: Object, required: true },
-  },
-  setup(props: any) {
-    const { location, weatherOfToday } = toRefs<any>(props);
-    const proxy = getCurrentInstance() as ComponentInternalInstance;
-    const {
-      formatLocationNameAndCountry,
-      formatTemperatureToCelcius,
-      formatHumidity,
-      formatUVI,
-      formatWind,
-    } = proxy.appContext.config.globalProperties.$filters;
+const props = defineProps({
+  location: { type: Object, required: true },
+  weatherOfToday: { type: Object, required: true },
+});
 
-    //get corresponding icon
-    const getWeatherIcon = computed((): string =>
-      getIconByWeatherId(props.weatherOfToday.weather[0].id)
-    );
+const { location, weatherOfToday } = toRefs<any>(props);
 
-    // format data;
-    const locationNameAndCountry = computed(() =>
-      formatLocationNameAndCountry(location.value.name, location.value.country)
-    );
-    const temperature = computed(() =>
-      formatTemperatureToCelcius(weatherOfToday.value.temp)
-    );
-    const humidity = computed(() =>
-      formatHumidity(weatherOfToday.value.humidity)
-    );
-    const uvi = computed(() => formatUVI(weatherOfToday.value.uvi));
-    const windDirectionAndVelocity = computed(() =>
-      formatWind(weatherOfToday.value.wind_deg, weatherOfToday.value.wind_speed)
-    );
+const proxy = getCurrentInstance() as ComponentInternalInstance;
 
-    return {
-      getWeatherIcon,
-      location,
-      weatherOfToday,
-      locationNameAndCountry,
-      temperature,
-      humidity,
-      uvi,
-      windDirectionAndVelocity,
-    };
-  },
-};
+const {
+  formatLocationNameAndCountry,
+  formatTemperatureToCelcius,
+  formatHumidity,
+  formatUVI,
+  formatWind,
+} = proxy.appContext.config.globalProperties.$filters;
+
+//get corresponding icon
+const getWeatherIcon = computed((): string =>
+  getIconByWeatherId(props.weatherOfToday.weather[0].id)
+);
+
+// format data;
+const locationNameAndCountry = computed(() =>
+  formatLocationNameAndCountry(location.value.name, location.value.country)
+);
+
+const temperature = computed(() =>
+  formatTemperatureToCelcius(weatherOfToday.value.temp)
+);
+
+const humidity = computed(() => formatHumidity(weatherOfToday.value.humidity));
+
+const uvi = computed(() => formatUVI(weatherOfToday.value.uvi));
+
+const windDirectionAndVelocity = computed(() =>
+  formatWind(weatherOfToday.value.wind_deg, weatherOfToday.value.wind_speed)
+);
+
 </script>
 
 <style lang="scss" scoped>

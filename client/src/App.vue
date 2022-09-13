@@ -10,29 +10,18 @@
   </div>
 </template>
 
-<script lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import WeatherForecastView from "./views/WeatherForecast.view.vue";
-import HomeView from "./views/Home.view.vue";
-
+<script lang="ts" setup>
 import { onMounted, onUnmounted, onUpdated } from "vue";
 
-export default {
-  name: "App",
-  components: { WeatherForecastView, HomeView },
-  setup() {
-    onMounted(() => {
-      console.log("mounted");
-    });
-    onUnmounted(() => {
-      console.log("unmounted");
-    });
-    onUpdated(() => {
-      console.log("update");
-    });
-  },
-};
+onMounted(() => {
+  console.log("mounted");
+});
+onUnmounted(() => {
+  console.log("unmounted");
+});
+onUpdated(() => {
+  console.log("update");
+});
 </script>
 
 <style lang="scss" scoped>

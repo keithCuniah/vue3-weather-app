@@ -51,14 +51,14 @@ import {
 } from "../../composables/getCitiesByCountry.composable";
 import { CountryObjFromAPI, CityObjFromAPI } from "../../types";
 import LoadingSpinner from "./../loading-spinner/LoadingSpinner.component.vue";
+
+
 export default {
   components: {
     LoadingSpinner,
     SelectInput,
   },
   setup(props: any, context: SetupContext) {
-    // const countrySelected = ref<CountryObjFromAPI | null>(null);
-    // const citySelected = ref<CityObjFromAPI | null>(null);
     const storeCountries = useCountriesStore();
     const storeCities = useCitiesStore();
     const { selectedCountry, selectedCity } = storeToRefs(storeCities);

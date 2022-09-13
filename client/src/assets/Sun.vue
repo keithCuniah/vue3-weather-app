@@ -30,17 +30,6 @@
   </svg>
 </template>
 
-<script lang="ts">
-export default {
-  name: "SunIcon",
-  props: {
-    colorFill: {
-      type: String,
-      default: () => "black",
-    },
-  },
-};
-</script>
 <style lang="scss" scoped>
 @import "./styles.scss";
 </style>

@@ -1,55 +1,64 @@
 <template>
-  <SunIcon v-if="name === IMAGES_TYPE.SUN" :colorFill="colorFill" />
+  <SunIcon v-if="props.name === IMAGES_TYPE.SUN" :colorFill="props.colorFill" />
   <CloudFogIcon
-    v-else-if="name === IMAGES_TYPE.CLOUD_FOG"
-    :colorFill="colorFill"
+    v-else-if="props.name === IMAGES_TYPE.CLOUD_FOG"
+    :colorFill="props.colorFill"
   />
   <CloudMoonIcon
-    v-else-if="name === IMAGES_TYPE.CLOUD_MOON"
-    :colorFill="colorFill"
+    v-else-if="props.name === IMAGES_TYPE.CLOUD_MOON"
+    :colorFill="props.colorFill"
   />
   <CloudRainMoonIcon
-    v-else-if="name === IMAGES_TYPE.CLOUD_RAIN_MOON"
-    :colorFill="colorFill"
+    v-else-if="props.name === IMAGES_TYPE.CLOUD_RAIN_MOON"
+    :colorFill="props.colorFill"
   />
   <CloudRainSnowIcon
-    v-else-if="name === IMAGES_TYPE.CLOUD_RAIN_SNOW"
-    :colorFill="colorFill"
+    v-else-if="props.name === IMAGES_TYPE.CLOUD_RAIN_SNOW"
+    :colorFill="props.colorFill"
   />
   <CloudRainStormIcon
-    v-else-if="name === IMAGES_TYPE.CLOUD_RAIN_STORM"
-    :colorFill="colorFill"
+    v-else-if="props.name === IMAGES_TYPE.CLOUD_RAIN_STORM"
+    :colorFill="props.colorFill"
   />
   <CloudRainSunIcon
-    v-else-if="name === IMAGES_TYPE.CLOUD_RAIN_SUN"
-    :colorFill="colorFill"
+    v-else-if="props.name === IMAGES_TYPE.CLOUD_RAIN_SUN"
+    :colorFill="props.colorFill"
   />
   <CloudRainWindIcon
-    v-else-if="name === IMAGES_TYPE.CLOUD_RAIN_WIND"
-    :colorFill="colorFill"
+    v-else-if="props.name === IMAGES_TYPE.CLOUD_RAIN_WIND"
+    :colorFill="props.colorFill"
   />
   <CloudRainIcon
-    v-else-if="name === IMAGES_TYPE.CLOUD_RAIN"
-    :colorFill="colorFill"
+    v-else-if="props.name === IMAGES_TYPE.CLOUD_RAIN"
+    :colorFill="props.colorFill"
   />
   <CloudSnowIcon
-    v-else-if="name === IMAGES_TYPE.CLOUD_SNOW"
-    :colorFill="colorFill"
+    v-else-if="props.name === IMAGES_TYPE.CLOUD_SNOW"
+    :colorFill="props.colorFill"
   />
   <CloudSunIcon
-    v-else-if="name === IMAGES_TYPE.CLOUD_SUN"
-    :colorFill="colorFill"
+    v-else-if="props.name === IMAGES_TYPE.CLOUD_SUN"
+    :colorFill="props.colorFill"
   />
-  <MoonIcon v-else-if="name === IMAGES_TYPE.MOON" :colorFill="colorFill" />
-  <WindIcon v-else-if="name === IMAGES_TYPE.WIND" :colorFill="colorFill" />
+  <MoonIcon
+    v-else-if="props.name === IMAGES_TYPE.MOON"
+    :colorFill="props.colorFill"
+  />
+  <WindIcon
+    v-else-if="props.name === IMAGES_TYPE.WIND"
+    :colorFill="props.colorFill"
+  />
   <WindSnowIcon
-    v-else-if="name === IMAGES_TYPE.WIND_SNOW"
-    :colorFill="colorFill"
+    v-else-if="props.name === IMAGES_TYPE.WIND_SNOW"
+    :colorFill="props.colorFill"
   />
-  <CloudIcon v-else-if="name === IMAGES_TYPE.CLOUD" :colorFill="colorFill" />
+  <CloudIcon
+    v-else-if="props.name === IMAGES_TYPE.CLOUD"
+    :colorFill="props.colorFill"
+  />
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import IMAGES_TYPE from "../../assets/constantsIcons";
 import SunIcon from "../../assets/Sun.vue";
 import CloudFogIcon from "../../assets/CloudFog.vue";
@@ -66,41 +75,15 @@ import MoonIcon from "../../assets/Moon.vue";
 import WindIcon from "../../assets/Wind.vue";
 import WindSnowIcon from "../../assets/WindSnow.vue";
 import CloudIcon from "../../assets/Cloud.vue";
-export default {
-  name: "Icon",
-  components: {
-    SunIcon,
-    CloudFogIcon,
-    CloudMoonIcon,
-    CloudRainMoonIcon,
-    CloudRainSnowIcon,
-    CloudRainStormIcon,
-    CloudRainSunIcon,
-    CloudRainWindIcon,
-    CloudRainIcon,
-    CloudSnowIcon,
-    CloudSunIcon,
-    MoonIcon,
-    WindIcon,
-    WindSnowIcon,
-    CloudIcon,
-  },
-  props: {
-    name: {
-      type: String,
-      required: true,
-    },
-    colorFill: {
-      type: String,
-      default: () => "black",
-    },
-  },
-  setup(props: any) {
-    return {
-      IMAGES_TYPE,
-    };
-  },
-};
-</script>
 
-<style lang="scss" scoped></style>
+const props = defineProps({
+  name: {
+    type: String,
+    required: true,
+  },
+  colorFill: {
+    type: String,
+    default: () => "black",
+  },
+});
+</script>

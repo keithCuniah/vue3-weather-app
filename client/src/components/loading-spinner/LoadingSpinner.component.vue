@@ -10,29 +10,24 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { computed } from "vue";
 
-export default {
-  props: {
-    isLoading: {
-      type: Boolean,
-      required: true,
-    },
-    valueOnLoad: {
-      required: true,
-      validator: (value: string | null) =>
-        typeof value === "string" || value === null,
-    },
+const props = defineProps({
+  isLoading: {
+    type: Boolean,
+    required: true,
   },
-  setup(props: any) {
-    const label = computed((): string =>
-      props.valueOnLoad
-        ? `Please wait, ${props.valueOnLoad} are loaded...`
-        : `Please wait ...`
-    );
+  valueOnLoad: {
+    required: true,
+    validator: (value: string | null) =>
+      typeof value === "string" || value === null,
+  },
+});
 
-    return { label };
-  },
-};
+const label = computed((): string =>
+  props.valueOnLoad
+    ? `Please wait, ${props.valueOnLoad} are loaded...`
+    : `Please wait ...`
+);
 </script>
