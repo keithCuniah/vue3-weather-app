@@ -9,7 +9,7 @@
     <div class="q-pa-md select-input-content" v-if="countries.length">
       <SelectInput
         v-if="countries.length"
-        :defaultOption="countrySelected"
+        :defaultOption="selectedCountry"
         :options="countries"
         label="Select a country"
         optionValue="id"
@@ -22,13 +22,13 @@
       >
 
       <SelectInput
-        :defaultOption="citySelected"
+        :defaultOption="selectedCity"
         :options="cities"
         label="Select a city"
         optionValue="id"
         optionLabel="name"
         @onSelect="onSelectCity"
-        :isDisabled="countrySelected === null || errorGetCountries"
+        :isDisabled="selectedCountry === null || errorGetCountries"
       />
     </div>
   </div>
@@ -38,6 +38,7 @@
 import { onMounted, Ref, ref, SetupContext, watch } from "vue";
 import { useCountriesStore } from "../../stores/countries.store";
 import { useCitiesStore } from "../../stores/cities.store";
+import { storeToRefs } from "pinia";
 import SelectInput from "./SelectInput.component.vue";
 import { onAwaitCall } from "../../utils";
 import {
@@ -50,17 +51,17 @@ import {
 } from "../../composables/getCitiesByCountry.composable";
 import { CountryObjFromAPI, CityObjFromAPI } from "../../types";
 import LoadingSpinner from "./../loading-spinner/LoadingSpinner.component.vue";
-
 export default {
   components: {
     LoadingSpinner,
     SelectInput,
   },
   setup(props: any, context: SetupContext) {
-    const countrySelected = ref<CountryObjFromAPI | null>(null);
+    // const countrySelected = ref<CountryObjFromAPI | null>(null);
+    // const citySelected = ref<CityObjFromAPI | null>(null);
     const storeCountries = useCountriesStore();
     const storeCities = useCitiesStore();
-    const citySelected = ref<CityObjFromAPI | null>(null);
+    const { selectedCountry, selectedCity } = storeToRefs(storeCities);
     const cities = ref<CityObjFromAPI[]>([]);
     const {
       countries,
@@ -72,16 +73,12 @@ export default {
       initCountries();
     });
 
-    watch(countrySelected, async () => {
-      if (countrySelected.value) {
-        loadCitiesAndAssignResponse(countrySelected.value);
+    watch(selectedCountry, () => {
+      if (selectedCountry.value) {
+        loadCitiesAndAssignResponse(selectedCountry.value);
       } else {
-        citySelected.value = null;
+        resetSelectedCity();
       }
-    });
-
-    watch(citySelected, () => {
-      context.emit("locationSelected", citySelected);
     });
 
     const initCountries = async () => {
@@ -89,7 +86,7 @@ export default {
         countries.value = storeCountries.countries;
       } else {
         await onAwaitCall(context, loadCountries, "countries");
-        storeCountries.setCountries(countries.value);
+        storeCountries.countries = countries.value;
       }
     };
 
@@ -110,29 +107,27 @@ export default {
     };
 
     const onSelectCountry = ($event: Ref<CountryObjFromAPI>) => {
-      countrySelected.value = $event.value;
       storeCities.setSelectedCountry($event.value);
-      initSelectedCity();
+      resetSelectedCity();
     };
 
     const onSelectCity = ($event: Ref<CityObjFromAPI>) => {
-      citySelected.value = $event.value;
+      selectedCity.value = $event.value;
     };
 
-    const initSelectedCity = () => {
-      citySelected.value = null;
-      storeCities.setSelectedCity(null);
+    const resetSelectedCity = () => {
+      selectedCity.value = null;
     };
 
     return {
       countries,
-      countrySelected,
       errorGetCountries,
       cities,
-      citySelected,
       onSelectCountry,
       onSelectCity,
       storeCountries,
+      selectedCountry,
+      selectedCity,
     };
   },
 };

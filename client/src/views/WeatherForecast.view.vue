@@ -1,20 +1,19 @@
 <template>
-  <LoadingSpinner :isLoading="showLoading" :valueOnLoad="valueOnLoad" />
+  <LoadingSpinner :isLoading="showLoading" :valueOnLoad="onLoading" />
   <LocationForm
-    @locationSelected="onLocationSelection"
     @onLoading="isLoading(true, $event)"
     @loaded="isLoading(false)"
   />
   <WeatherForecastCard
     v-if="showCard"
-    :location="locationSelected"
+    :location="selectedCity"
     :weatherOfToday="weatherOfToday"
     :forecast7Days="forecast7Days"
   />
 </template>
 
 <script lang="ts">
-import { Ref, ref, toRefs } from "vue";
+import { Ref, ref, toRefs, watch } from "vue";
 import LocationForm from "../components/select-location-form/LocationForm.components.vue";
 import WeatherForecastCard from "../components/weather-forecast-card/WeatherForecastCard.component.vue";
 import LoadingSpinner from "../components/loading-spinner/LoadingSpinner.component.vue";
@@ -25,36 +24,44 @@ import {
   WeatherOfToday,
 } from "../types";
 import { getWeatherAndForecast } from "../composables/getWeatherForecastByLocation.composable";
+import { useCitiesStore } from "../stores/cities.store";
+import { storeToRefs } from "pinia";
 
 export default {
   name: "WeatherForecastView",
   components: { LoadingSpinner, LocationForm, WeatherForecastCard },
   setup() {
-    const locationSelected = ref<CityObjFromAPI | null>(null);
     const showLoading = ref<Boolean>(false);
     const showCard = ref<Boolean>(false);
-    const valueOnLoad = ref<string | null>(null);
+    const onLoading = ref<string | null>(null);
 
     const weatherOfToday = ref<WeatherOfToday | {}>({});
     const forecast7Days = ref<Forecast7Days | []>([]);
 
-    const onLocationSelection = ($event: Ref<CityObjFromAPI | null>) => {
-      locationSelected.value = $event.value;
-      if (locationSelected.value) {
-        getWeatherAndForecastAndInitValues(locationSelected.value);
+    const storeCities = useCitiesStore();
+    const { selectedCity } = storeToRefs(storeCities);
+
+    watch(selectedCity, () => {
+      onSelectLocation();
+    });
+
+    // selectedCity
+    const onSelectLocation = () => {
+      if (selectedCity.value) {
+        getWeatherAndForecastAndInitValues();
       } else {
         showCard.value = false;
       }
     };
 
-    const getWeatherAndForecastAndInitValues = async (
-      location: CityObjFromAPI
-    ): Promise<void> => {
+    const getWeatherAndForecastAndInitValues = async (): Promise<void> => {
       const {
         weatherAndForecastObj,
         error: errorGetWeatherAndForecast,
         loadWeatherAndForecast,
-      }: GetWeatherAndForecast = getWeatherAndForecast(location);
+      }: GetWeatherAndForecast = getWeatherAndForecast(
+        selectedCity.value as unknown as CityObjFromAPI
+      );
 
       try {
         showCard.value = false;
@@ -68,9 +75,9 @@ export default {
       }
     };
 
-    const isLoading = (isLoading: boolean, valueOnLoading: string = "") => {
+    const isLoading = (isLoading: boolean, labelOfValueOnLoading: string = "") => {
       showLoading.value = isLoading;
-      valueOnLoad.value = valueOnLoading;
+      onLoading.value = labelOfValueOnLoading;
     };
 
     const initWeatherAndForecast7Days = (weatherAndForecastObj: Ref<any>) => {
@@ -81,13 +88,12 @@ export default {
 
     return {
       showLoading,
-      locationSelected,
-      valueOnLoad,
+      onLoading,
       showCard,
       weatherOfToday,
       forecast7Days,
-      onLocationSelection,
       isLoading,
+      selectedCity,
     };
   },
 };
