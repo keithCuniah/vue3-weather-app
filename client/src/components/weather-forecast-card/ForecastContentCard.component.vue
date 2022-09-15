@@ -10,11 +10,12 @@
 
 <script lang="ts" setup>
 import { PropType } from "vue";
+import { Forecast7Days } from "../../types";
 import Widget from "../widget/Widget.component.vue";
 
 const props = defineProps({
   forecast7Days: {
-    type: Array as PropType<any[]>,
+    type: Object as PropType<Forecast7Days>,
     required: true,
   },
 });
