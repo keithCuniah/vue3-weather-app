@@ -15,7 +15,7 @@
         optionValue="id"
         optionLabel="country"
         @onSelect="onSelectCountry"
-        :isDisabled="errorGetCountries"
+        :isDisabled="!!errorGetCountries"
       />
       <span v-if="errorGetCountries">
         There is an error when fetching the countries</span
@@ -28,17 +28,17 @@
         optionValue="id"
         optionLabel="name"
         @onSelect="onSelectCity"
-        :isDisabled="selectedCountry === null || errorGetCountries"
+        :isDisabled="selectedCountry === null || !!errorGetCountries"
       />
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { onMounted, Ref, ref, SetupContext, watch } from "vue";
+<script lang="ts" setup>
+import { onMounted, Ref, ref, watch } from "vue";
+import { storeToRefs } from "pinia";
 import { useCountriesStore } from "../../stores/countries.store";
 import { useCitiesStore } from "../../stores/cities.store";
-import { storeToRefs } from "pinia";
 import SelectInput from "./SelectInput.component.vue";
 import { onAwaitCall } from "../../utils";
 import {
@@ -50,86 +50,67 @@ import {
   GetCitiesByCountry,
 } from "../../composables/getCitiesByCountry.composable";
 import { CountryObjFromAPI, CityObjFromAPI } from "../../types";
-import LoadingSpinner from "./../loading-spinner/LoadingSpinner.component.vue";
 
+const emit = defineEmits(["onLoading", "loaded"]);
 
-export default {
-  components: {
-    LoadingSpinner,
-    SelectInput,
-  },
-  setup(props: any, context: SetupContext) {
-    const storeCountries = useCountriesStore();
-    const storeCities = useCitiesStore();
-    const { selectedCountry, selectedCity } = storeToRefs(storeCities);
-    const cities = ref<CityObjFromAPI[]>([]);
-    const {
-      countries,
-      error: errorGetCountries,
-      loadCountries,
-    }: GetCountries = getCountries();
+const storeCountries = useCountriesStore();
+const storeCities = useCitiesStore();
+const { selectedCountry, selectedCity } = storeToRefs(storeCities);
+const cities = ref<CityObjFromAPI[]>([]);
+const {
+  countries,
+  error: errorGetCountries,
+  loadCountries,
+}: GetCountries = getCountries();
 
-    onMounted(() => {
-      initCountries();
-    });
+onMounted(() => {
+  initCountries();
+});
 
-    watch(selectedCountry, () => {
-      if (selectedCountry.value) {
-        loadCitiesAndAssignResponse(selectedCountry.value);
-      } else {
-        resetSelectedCity();
-      }
-    });
+watch(selectedCountry, () => {
+  if (selectedCountry.value) {
+    loadCitiesAndAssignResponse(selectedCountry.value);
+  } else {
+    resetSelectedCity();
+  }
+});
 
-    const initCountries = async () => {
-      if (storeCountries.isCountriesInStore) {
-        countries.value = storeCountries.countries;
-      } else {
-        await onAwaitCall(context, loadCountries, "countries");
-        storeCountries.countries = countries.value;
-      }
-    };
+const initCountries = async () => {
+  if (storeCountries.isCountriesInStore) {
+    countries.value = storeCountries.countries;
+  } else {
+    await onAwaitCall(emit, loadCountries, "countries");
+    storeCountries.countries = countries.value;
+  }
+};
 
-    const loadCitiesAndAssignResponse = async (
-      countrySelectedValue: CountryObjFromAPI
-    ) => {
-      const {
-        cities: citiesFetched,
-        error: errorGetCities,
-        loadCities,
-      }: GetCitiesByCountry = getCitiesByCountry(countrySelectedValue);
+const loadCitiesAndAssignResponse = async (
+  countrySelectedValue: CountryObjFromAPI
+) => {
+  const {
+    cities: citiesFetched,
+    error: errorGetCities,
+    loadCities,
+  }: GetCitiesByCountry = getCitiesByCountry(countrySelectedValue);
 
-      await onAwaitCall(context, loadCities, "cities");
+  await onAwaitCall(emit, loadCities, "cities");
 
-      if (errorGetCities.value === null) {
-        cities.value = citiesFetched.value;
-      }
-    };
+  if (errorGetCities.value === null) {
+    cities.value = citiesFetched.value;
+  }
+};
 
-    const onSelectCountry = ($event: Ref<CountryObjFromAPI>) => {
-      storeCities.setSelectedCountry($event.value);
-      resetSelectedCity();
-    };
+const onSelectCountry = ($event: Ref<CountryObjFromAPI>) => {
+  storeCities.setSelectedCountry($event.value);
+  resetSelectedCity();
+};
 
-    const onSelectCity = ($event: Ref<CityObjFromAPI>) => {
-      selectedCity.value = $event.value;
-    };
+const onSelectCity = ($event: Ref<CityObjFromAPI>) => {
+  selectedCity.value = $event.value;
+};
 
-    const resetSelectedCity = () => {
-      selectedCity.value = null;
-    };
-
-    return {
-      countries,
-      errorGetCountries,
-      cities,
-      onSelectCountry,
-      onSelectCity,
-      storeCountries,
-      selectedCountry,
-      selectedCity,
-    };
-  },
+const resetSelectedCity = () => {
+  selectedCity.value = null;
 };
 </script>
 

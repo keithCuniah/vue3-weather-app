@@ -40,7 +40,11 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  isDisabled: { type: Boolean, required: false, default: () => true },
+  isDisabled: {
+    type: Boolean,
+    required: false,
+    default: () => true,
+  },
   label: {
     type: String,
     required: true,

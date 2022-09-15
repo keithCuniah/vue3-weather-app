@@ -1,19 +1,17 @@
-import { SetupContext } from "vue";
-
 export const sortArrayOfObjByKey = <T>(
   arrayOfObj: Array<T>,
   keyOfObj: keyof T
 ) => arrayOfObj.sort((a: T, b: T) => (a[keyOfObj] > b[keyOfObj] ? 1 : -1));
 
 export const onAwaitCall = async (
-  context: SetupContext,
+  emit: (event: "onLoading" | "loaded", ...args: any[]) => void,
   getValues: () => Promise<void>,
   labelOfWaitedValues: string | null
 ) => {
   try {
-    context.emit("onLoading", labelOfWaitedValues);
+    emit("onLoading", labelOfWaitedValues);
     await getValues();
-    context.emit("loaded");
+    emit("loaded");
   } catch (err) {
     console.log(err);
   }
