@@ -8,7 +8,7 @@ import { Quasar } from "quasar";
 import "@quasar/extras/material-icons/material-icons.css";
 import "quasar/src/css/index.sass";
 
-import { convertDegToCardinal, capitalizedWord } from "./utils";
+import { convertDegToCardinal, capitalized } from "./utils";
 import {
   convertVelocityMeterBySecondInKilometerByHour,
   getDayFromTimestamp,
@@ -43,10 +43,10 @@ app.config.globalProperties.$filters = {
     return `${Math.round(temperatureInKelvin - 273.15)}º`;
   },
   formatLocationNameAndCountry(name: string, country: string): string {
-    return `${capitalizedWord(name)}, ${country.toUpperCase()}`;
+    return `${capitalized(name)}, ${country.toUpperCase()}`;
   },
   formatDate(timeStamp: number): string {
     const day = getDayFromTimestamp(timeStamp);
-    return `${capitalizedWord(day)}`;
+    return `${capitalized(day)}`;
   },
 };
