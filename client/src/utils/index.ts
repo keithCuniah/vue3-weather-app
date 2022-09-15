@@ -17,7 +17,7 @@ export const onAwaitCall = async (
   }
 };
 
-export const capitalizedWord = (word: string): string =>
+export const capitalized = (word: string): string =>
   word.charAt(0).toUpperCase() + word.slice(1).toLocaleLowerCase();
 
 export const convertDegToCardinal = (windDeg: number): string => {
@@ -49,7 +49,7 @@ export const convertDegToCardinal = (windDeg: number): string => {
 
 export const convertVelocityMeterBySecondInKilometerByHour = (
   velocityInMeterBySecond: number
-): number => Math.round(velocityInMeterBySecond * 3.6);
+): number => Math.round(velocityInMeterBySecond * 3.6 * 10) / 10;
 
 export const getDayFromTimestamp = (timeStamp: number): string =>
   new Date(timeStamp * 1000).toLocaleString("en-US", { weekday: "long" });
