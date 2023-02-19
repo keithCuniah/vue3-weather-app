@@ -10,20 +10,6 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-import { onMounted, onUnmounted, onUpdated } from "vue";
-
-onMounted(() => {
-  console.log("mounted");
-});
-onUnmounted(() => {
-  console.log("unmounted");
-});
-onUpdated(() => {
-  console.log("update");
-});
-</script>
-
 <style lang="scss" scoped>
 #app {
   display: flex;
